@@ -1,0 +1,241 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="row">
+    <h1 class="display-4 text-center">Benchmark <i class="fa fa-chart-bar"></i><br /> Relation Databases and Graph Databases Queries</h1>
+</div>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="card text-center" id="cardIdMysql">
+            <div class="card-body" id="cardMySQL">
+                <h5 class="card-title" id="titleMysql">Add connection to Relation Databases</h5>
+                <div id="bodyCardMysql">
+                    <hr />
+                    <p class="card-text">
+                        <img src="~/img/relational.png" class="card-img-bottom" alt="...">
+                    </p>
+                    <hr />
+                    <a class="btn btn-success btn-block" data-toggle="modal" data-target="#mysqlModal">Add connection</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card text-center" id="cardIdNeo4j">
+            <div class="card-body" id="cardNeo4j">
+                <h5 class="card-title" id="titleNeo4j">Add connection to Graph Databases</h5>
+                <div id="bodyCardNeo4j">
+                    <hr />
+                    <p class="card-text">
+                        <img src="~/img/graph.png" class="card-img-bottom" alt="...">
+                    </p>
+                    <hr />
+                    <a class="btn btn-success btn-block" data-toggle="modal" data-target="#neo4jModal">Add connection</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" id="next">
+
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="mysqlModal" tabindex="-1" role="dialog" aria-labelledby="mysqlTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="inputEmail4">Host</label>
+                        <input type="text" class="form-control" id="hostMysql" placeholder="localhost">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputPassword4">Port</label>
+                        <input type="text" class="form-control" id="portMysql" placeholder="Port">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputAddress">Type</label>
+                    <select id="inputState" class="form-control">
+                        <option selected>Choose...</option>
+                        <option>MySQL</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="inputAddress2">Database</label>
+                    <input type="text" class="form-control" id="databaseMysql" placeholder="Database">
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="inputCity">Username</label>
+                        <input type="text" class="form-control" id="usernameMysql">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputState">Password</label>
+                        <input type="password" class="form-control" id="passwordMysql" placeholder="Password">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="mysqlOK" class="btn btn-success" data-dismiss="modal">Connect</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="neo4jModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="inputEmail4">URL</label>
+                        <input type="text" class="form-control" id="hostNeo" value="bolt://localhost:7687" placeholder="bolt://localhost:7687">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputAddress">Type</label>
+                    <select id="inputState" class="form-control">
+                        <option selected>Choose...</option>
+                        <option>Neo4j</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="inputCity">Username</label>
+                        <input type="text" class="form-control" id="usernameNeo">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputState">Password</label>
+                        <input type="password" class="form-control" id="passwordNeo" placeholder="Password">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="neo4jOK" class="btn btn-success" data-dismiss="modal">Connect</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+
+    <script>
+
+        var mysql = false;
+        var neo4j = false;
+
+        $("#mysqlOK").on("click", function () {
+
+            var host = $("#hostMysql").val(); 
+            var port = $("#portMysql").val(); 
+            var database = $("#databaseMysql").val(); 
+            var username = $("#usernameMysql").val(); 
+            var password = $("#passwordMysql").val(); 
+
+            var connection = {
+                host: host,
+                port: port,
+                database: database,
+                username: username,
+                password: password
+            }
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: "https://localhost:44342/CheckConnectionMySQL",
+                data: JSON.stringify(connection),
+                success: function (result) {
+                    console.log('Data received');
+                    console.log(result);
+                    if (result == true) {
+                        $("#bodyCardMysql").empty();
+                        $("#cardIdMysql").removeClass("bg-danger");
+                        $("#cardIdMysql").addClass("bg-success");
+                        $("#titleMysql").html("Connection success! </br>");
+                        $("#bodyCardMysql").append("<i class='fas fa-check fa-8x'></i>");
+                        mysql = true;
+                    } else {
+                        $("#bodyCardMysql").empty();
+                        $("#cardIdMysql").removeClass("bg-success");
+                        $("#cardIdMysql").addClass("bg-danger");
+                        $("#titleMysql").html("Connection failed! </br>");
+                        $("#bodyCardMysql").append("<i class='fas fa-minus fa-8x'></i> </br>");
+                        $("#bodyCardMysql").append('<a class="btn btn-light btn-block" data-toggle="modal" data-target="#mysqlModal">Edit connection</a>');
+                        mysql = false;
+                    }
+                }
+            });
+
+         
+
+        })
+
+        $("#neo4jOK").on("click", function () {
+
+            var bolt = $("#hostNeo").val();
+            var userName = $("#usernameNeo").val();
+            var password = $("#usernameNeo").val();
+
+            var connection = {
+                host: host,
+                port: port,
+                database: database,
+                username: username,
+                password: password
+            }
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: "https://localhost:44342/CheckConnectionNeo4j",
+                data: JSON.stringify(connection),
+                success: function (result) {
+                    if (result == true) {
+                        $("#bodyCardNeo4j").empty();
+                        $("#cardIdNeo4j").removeClass("bg-danger");
+                        $("#cardIdNeo4j").addClass("bg-success");
+                        $("#titleNeo4j").html("Connection success! </br>")
+                        $("#bodyCardNeo4j").append("<i class='fas fa-check fa-8x'></i>")
+                        neo4j = true;
+                        if (mysql == true && neo4j == true) {
+                            $("#next").html("<div class='col-md-6 offset-md-3' style='margin-top:20px;'><a type='button' href='/Home/Benchmark' class='btn btn-block btn-success'>Next</a></div>")
+                            console.log("tak");
+                        }
+                    } else {
+                        $("#bodyCardNeo4j").empty();
+                        $("#cardIdNeo4j").removeClass("bg-danger");
+                        $("#cardIdNeo4j").addClass("bg-danger");
+                        $("#titleNeo4j").html("Connection failed! </br>")
+                        $("#bodyCardNeo4j").append("<i class='fas fa-minus fa-8x'></i> </br>")
+                        $("#bodyCardNeo4j").append('<a class="btn btn-light btn-block" data-toggle="modal" data-target="#neo4jModal">Edit connection</a>')
+                        neo4j = false;
+                    }
+                }
+            });
+
+           
+        })
+
+    </script>
+}

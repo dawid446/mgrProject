@@ -1,0 +1,208 @@
+﻿
+@model mgrProject.Models.ViewModel.StatisticsViewModel
+
+
+<div>
+    <ul class="nav nav-pills nav-fill" id="pills-tab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Details</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Query</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Generation fake date</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+            <div class="row" style="margin-top:30px">
+                <div class="col">
+                    <h1 class="display-4 text-center">Relation Database</h1>
+                </div>
+                <div class="col">
+                    <h1 class="display-4 text-center">Graph Database</h1>
+                </div>
+            </div>
+        
+            <div class="card-deck">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <p class="card-text"> @Html.Partial("_MySQLDetailsPartial", Model)</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body text-center">
+                        <p class="card-text">@Html.Partial("_CypherDetailsPartial", Model)</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">MySQL Query</label>
+                <textarea class="form-control" id="mysqlquery" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">Cypher Query</label>
+                <textarea class="form-control" id="neo4jquery" rows="3"></textarea>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 offset-md-4">
+                    <div class="form-group">
+                        <label for="inputAddress">How many times query to be executed:</label>
+                        <select id="inputCountExecute" class="form-control">
+                            <option selected>1</option>
+                            <option>10</option>
+                            <option>100</option>
+                            <option>1000</option>
+                        </select>
+                    </div>
+                    <button id="execute" type="button" class="btn btn-primary btn-lg btn-block">Execute</button>
+                </div>
+            </div>
+
+            <div class="row chart">
+                <div class="col-sm-10">
+                    <canvas id="myChart" width="400" height="200"></canvas>
+                </div>
+                <div class="col-sm-2">
+                        <label id="mysql"></label> <br />
+                        <label id="neo4j"></label>
+                  
+                </div>
+            </div>
+                
+            <div class="row chart">
+                <canvas id="myChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+            @Html.Partial("_GenerationDatePartial", Model)
+        </div>
+    </div>
+
+  <style>
+      .chart{
+          display: none;
+      }
+  </style>
+
+    
+    @section scripts{
+        <script>
+
+            const ctx = document.getElementById('myChart');
+            const myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    datasets: [{
+                        label: 'time in ms',
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            document.getElementById("execute").onclick = async () => {
+
+                myChart.data.datasets[0].data = [];
+                myChart.data.labels = [];
+
+                var count = $("#inputCountExecute option:selected").text();
+
+                for (var i = 0; i < count; i++)
+                {
+                    loadDataRelation().done(function (result) {
+                        $("#mysql").html("<strong> MySQL: " + result.timeQuery + " ms </strong>");
+                        console.log("MYSQL" + result.timeQuery + " ms");
+                        addData(myChart, "MYSQL", result.timeQuery);
+                    });
+
+                    loadDataGraph().done(function (result) {
+                        $("#neo4j").html("<strong> Neo4j: " + result.timeQuery + " ms </strong>");
+                        console.log("GRAPH" + result.timeQuery);
+                        addData(myChart, "NEO4J", result.timeQuery);
+                    });
+                }
+
+                $(".chart").css("display","flex");
+            };
+
+            function addData(chart,label, data) {
+              
+                chart.data.labels.push(label);
+
+                chart.data.datasets.forEach((dataset) => {
+                    dataset.data.push(data);
+                });
+
+                chart.update();
+            }
+
+
+           
+
+            function loadDataRelation() {
+                var querymysql = $("#mysqlquery").val().replace(/(\r\n|\n|\r)/gm, " ");
+
+                console.log(querymysql);
+
+                return $.ajax({
+                    url: 'https://localhost:44342/queryMySQL?query=' + querymysql,
+                    type: "POST",
+                    dataType: "json",
+                    success: function (result) {
+                        //console.log(result);
+                        value = result.timeQuery;
+                        //$.each(result, function (key, item) {
+
+
+                        //});
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                    }
+                });
+            }
+
+            function loadDataGraph() {
+                var queryNeo4j = $("#neo4jquery").val().replace(/\n/g, '');
+
+                return $.ajax({
+                    url: 'https://localhost:44342/queryCypher?query=' + queryNeo4j,
+                    type: "POST",
+                    dataType: "json",
+                    success: function (result) {
+                        //console.log(result);
+                        value = result.timeQuery;
+                        //$.each(result, function (key, item) {
+
+
+                        //});
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                    }
+                });
+            }
+
+        </script>
+    }
+</div>

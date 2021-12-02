@@ -1,0 +1,27 @@
+﻿@model mgrProject.Models.ViewModel.StatisticsViewModel
+
+<div>
+
+    @Html.DisplayNameFor(model => model.TableMySQL)
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Table Name</th>
+                <th scope="col">Count</th>
+                <th scope="col">Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.TableMySQL)
+            {
+                <tr>
+                    <td> <i class="fas fa-table"></i> @item.tableName </td>
+                    <td> <input type="text" id="count_@item.tableName" class="form-control" placeholder="Count"></td>
+                    <td> <input class="btn btn-primary" id="@item.tableName" type="button" value="Add"></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+</div>

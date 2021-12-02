@@ -1,0 +1,35 @@
+﻿@model mgrProject.Models.ViewModel.StatisticsViewModel
+
+<div>
+
+    <h3>
+        @Html.DisplayNameFor(model => model.TableMySQL)
+    </h3>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Table Name</th>
+                <th scope="col">Count</th>
+                <th scope="col">Memory Use (MB)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.TableMySQL)
+            {
+                <tr>
+                    <td> <i class="fas fa-table"></i> @item.tableName </td>
+                    <td>@item.count</td>
+                    <td><i class="fas fa-memory"></i> @item.memoryUse</td>
+                </tr>
+            }
+            <tr>
+                <td>Total:</td>
+                <td>@Math.Round(@Model.TableMySQL.Sum(s => Double.Parse(s.count)), 2)</td>
+                <td scope="row"><i class="fas fa-memory"></i>@Math.Round(@Model.TableMySQL.Sum(s=> Double.Parse(s.memoryUse)),2)</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+</div>

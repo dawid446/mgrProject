@@ -1,0 +1,69 @@
+﻿@model mgrProject.Models.ViewModel.StatisticsViewModel
+
+<div>
+    <h3>
+        @Html.DisplayNameFor(model => model.NodeNeo4j)
+    </h3>
+   
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Node name</th>
+                <th scope="col">Count</th>
+                <th scope="col">Memory Use by Node</th>
+                <th scope="col">Memory Use by Property</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.NodeNeo4j)
+            {
+                <tr>
+                    <td> <i class="far fa-circle"></i> @item.nodeName</td>
+                    <td>@item.count</td>
+                    <td><i class="fas fa-memory"></i> @item.memoryNode</td>
+                    <td><i class="fas fa-memory"></i> @item.memoryProperty</td>
+                </tr>
+            }
+
+        </tbody>
+        <tr>
+            <td> <i class="far fa-circle"></i> Total: </td>
+            <td>@Math.Round(@Model.NodeNeo4j.Sum(s => Double.Parse(s.count)), 2)</td>
+            <td><i class="fas fa-memory"></i> @Math.Round(@Model.NodeNeo4j.Sum(s => s.memoryNode), 2)</td>
+            <td><i class="fas fa-memory"></i> @Math.Round(@Model.NodeNeo4j.Sum(s => s.memoryProperty), 2)</td>
+        </tr>
+    </table>
+
+    <hr\>
+
+        <h3>
+            @Html.DisplayNameFor(model => model.RelationshipNeo4j)
+        </h3>
+       
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Relationship name</th>
+                    <th scope="col">Count</th>
+                    <th scope="col">Memory Use by Relationship</th>
+                    <th scope="col">Memory Use by Property</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.RelationshipNeo4j)
+                {
+                <tr>
+                    <td><i class="fa fa-exchange-alt"></i> @item.relationshipName</td>
+                    <td>@item.count</td>
+                    <td><i class="fas fa-memory"></i> @item.memoryRelationship</td>
+                    <td><i class="fas fa-memory"></i> @item.memoryProperty</td>
+                </tr>
+                }
+
+                  <td> <i class="far fa-circle"></i> Total: </td>
+                  <td>@Math.Round(@Model.RelationshipNeo4j.Sum(s => Double.Parse(s.count)), 2)</td>
+                  <td><i class="fas fa-memory"></i> @Math.Round(@Model.RelationshipNeo4j.Sum(s => s.memoryRelationship), 2)</td>
+                  <td><i class="fas fa-memory"></i> @Math.Round(@Model.RelationshipNeo4j.Sum(s => s.memoryProperty), 2)</td>
+            </tbody>
+        </table>
+</div>
