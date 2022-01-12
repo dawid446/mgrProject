@@ -48,7 +48,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">Connect to MySQL Databases</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -99,7 +99,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">Connect to Neo4j Databases</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -107,8 +107,14 @@
             <div class="modal-body">
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label for="inputEmail4">URL</label>
+                        <label for="hostNeoLabel">URL</label>
                         <input type="text" class="form-control" id="hostNeo" value="bolt://localhost:7687" placeholder="bolt://localhost:7687">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="databaseNeoLabel">Database</label>
+                        <input type="text" class="form-control" id="databaseNeo" value="" placeholder="">
                     </div>
                 </div>
                 <div class="form-group">
@@ -168,40 +174,40 @@
                 success: function (result) {
                     console.log('Data received');
                     console.log(result);
-                    if (result == true) {
+                    if (result.isConnection == true) {
                         $("#bodyCardMysql").empty();
                         $("#cardIdMysql").removeClass("bg-danger");
                         $("#cardIdMysql").addClass("bg-success");
                         $("#titleMysql").html("Connection success! </br>");
                         $("#bodyCardMysql").append("<i class='fas fa-check fa-8x'></i>");
                         mysql = true;
+                        if (mysql == true && neo4j == true) {
+                            $("#next").html("<div class='col-md-6 offset-md-3' style='margin-top:20px;'><a type='button' href='/Home/Benchmark' class='btn btn-block btn-success'>Next</a></div>")
+                        }
                     } else {
                         $("#bodyCardMysql").empty();
                         $("#cardIdMysql").removeClass("bg-success");
                         $("#cardIdMysql").addClass("bg-danger");
-                        $("#titleMysql").html("Connection failed! </br>");
+                        $("#titleMysql").html(`Connection failed! </br> ${result.message}`);
                         $("#bodyCardMysql").append("<i class='fas fa-minus fa-8x'></i> </br>");
                         $("#bodyCardMysql").append('<a class="btn btn-light btn-block" data-toggle="modal" data-target="#mysqlModal">Edit connection</a>');
                         mysql = false;
                     }
                 }
             });
-
-         
-
         })
 
         $("#neo4jOK").on("click", function () {
 
             var bolt = $("#hostNeo").val();
             var userName = $("#usernameNeo").val();
-            var password = $("#usernameNeo").val();
+            var password = $("#passwordNeo").val();
+            var database = $("#databaseNeo").val();
 
             var connection = {
-                host: host,
-                port: port,
+                bolt: bolt,
                 database: database,
-                username: username,
+                username: userName,
                 password: password
             }
 
@@ -211,7 +217,7 @@
                 url: "https://localhost:44342/CheckConnectionNeo4j",
                 data: JSON.stringify(connection),
                 success: function (result) {
-                    if (result == true) {
+                    if (result.isConnection == true) {
                         $("#bodyCardNeo4j").empty();
                         $("#cardIdNeo4j").removeClass("bg-danger");
                         $("#cardIdNeo4j").addClass("bg-success");
@@ -220,21 +226,18 @@
                         neo4j = true;
                         if (mysql == true && neo4j == true) {
                             $("#next").html("<div class='col-md-6 offset-md-3' style='margin-top:20px;'><a type='button' href='/Home/Benchmark' class='btn btn-block btn-success'>Next</a></div>")
-                            console.log("tak");
                         }
                     } else {
                         $("#bodyCardNeo4j").empty();
                         $("#cardIdNeo4j").removeClass("bg-danger");
                         $("#cardIdNeo4j").addClass("bg-danger");
-                        $("#titleNeo4j").html("Connection failed! </br>")
+                        $("#titleNeo4j").html(`Connection failed! </br>${result.message}`)
                         $("#bodyCardNeo4j").append("<i class='fas fa-minus fa-8x'></i> </br>")
                         $("#bodyCardNeo4j").append('<a class="btn btn-light btn-block" data-toggle="modal" data-target="#neo4jModal">Edit connection</a>')
                         neo4j = false;
                     }
                 }
             });
-
-           
         })
 
     </script>

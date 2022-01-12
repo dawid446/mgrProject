@@ -51,17 +51,17 @@ namespace mgrProject.API
         }
 
         [HttpPost("~/CheckConnectionMySQL")]
-        public async Task<IActionResult> CheckConnectionMySQL([FromBody] ConnectionValue connection)
+        public IActionResult CheckConnectionMySQL([FromBody] ConnectionValue connection)
         {
             var result = _mySQLService.IsServerConnected(connection);
             return Ok(result);
         }
 
         [HttpPost("~/CheckConnectionNeo4j")]
-        public async Task<IActionResult> CheckConnectionNeo4j([FromBody] ConnectionValueNeo4j connection)
+        public IActionResult CheckConnectionNeo4j([FromBody] ConnectionValueNeo4j connection)
         {
             var result = _neo4JService.IsServerConnected(connection);
-            return Ok(result);
+            return Ok(result.Result);
         }
 
     }

@@ -10,5 +10,6 @@ namespace mgrProject.Models
         public string bolt { get; set; }
         public string userName { get; set; }
         public string password { get; set; }
+        public string database { get; set; }
     }
 }

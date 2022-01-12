@@ -11,6 +11,7 @@ using System.Diagnostics;
 using mgrProject.Models;
 using Microsoft.Extensions.Options;
 using mgrProject.Interfaces;
+using mgrProject.Models.Response;
 
 namespace mgrProject.Services
 {
@@ -18,8 +19,8 @@ namespace mgrProject.Services
     {
         private readonly shopContext _context;
         private readonly MyConfiguration _myConfiguration;
-
         private string connectionString = "";
+
         public MySQLService(shopContext context, IOptions<MyConfiguration> myConfiguration)
         {
             _myConfiguration = myConfiguration.Value;
@@ -69,19 +70,25 @@ namespace mgrProject.Services
 
             return result;
         }
-        public bool IsServerConnected(ConnectionValue connectionV)
+        public ResponseConnection IsServerConnected(ConnectionValue connectionV)
         {
+            var response = new ResponseConnection();
             string connectionString = $"Server={connectionV.host};Port={connectionV.port};database={connectionV.database};user id={connectionV.username};password={connectionV.password}";
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (var connection = new MySqlConnection(connectionString))
             {
                 try
                 {
                     connection.Open();
-                    return true;
+                    response.error = false;
+                    response.isConnection = true;
+                    return response;
                 }
-                catch (SqlException ex)
+                catch (Exception ex)
                 {
-                    return false;
+                    response.error = true;
+                    response.isConnection = false;
+                    response.message = ex.Message;
+                    return response;
                 }
             }
         }

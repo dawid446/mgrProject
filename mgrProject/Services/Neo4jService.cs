@@ -1,6 +1,7 @@
 ﻿using mgrProject.Interfaces;
 using mgrProject.Models;
 using mgrProject.Models.Dictionary;
+using mgrProject.Models.Response;
 using Neo4j.Driver;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace mgrProject.Services
 
                 var watch = System.Diagnostics.Stopwatch.StartNew();
                 cursor = await session.RunAsync(query);
-                records.result =  cursor.ToListAsync().Result;
+                records.result = cursor.ToListAsync().Result;
                 watch.Stop();
                 records.timeQuery = watch.ElapsedMilliseconds;
 
@@ -45,7 +46,7 @@ namespace mgrProject.Services
             return records;
         }
 
-        public async Task<Dictionary<string,string>> relationshipCount()
+        public async Task<Dictionary<string, string>> relationshipCount()
         {
             IResultCursor cursor;
             var records = new Dictionary<string, string>();
@@ -93,7 +94,7 @@ RETURN DISTINCT count(labels(n)) as count, labels(n) as label");
                 while (await cursor.FetchAsync())
                 {
                     string count = cursor.Current[0].As<string>("anymous");
-                    string type= cursor.Current[1].As<List<string>>().FirstOrDefault();
+                    string type = cursor.Current[1].As<List<string>>().FirstOrDefault();
 
                     records.Add(type, count);
                 }
@@ -113,7 +114,7 @@ RETURN DISTINCT count(labels(n)) as count, labels(n) as label");
         }
 
 
-        public List<NodeInfoNeo4j> nodeInfoNeo4Js(Dictionary<string,string> neo4j)
+        public List<NodeInfoNeo4j> nodeInfoNeo4Js(Dictionary<string, string> neo4j)
         {
 
             var list = new List<NodeInfoNeo4j>();
@@ -122,7 +123,7 @@ RETURN DISTINCT count(labels(n)) as count, labels(n) as label");
                 var element = new NodeInfoNeo4j();
                 element.nodeName = item.Key;
                 element.count = item.Value;
-                var propCount = _nodeRelationship.getDictionary().Where(s=> s.Key == item.Key).FirstOrDefault();
+                var propCount = _nodeRelationship.getDictionary().Where(s => s.Key == item.Key).FirstOrDefault();
                 double count = Convert.ToDouble(element.count);
                 element.memoryNode = Math.Round(((propCount.Value * 15) * count) * 0.000001, 4);
                 element.memoryProperty = Math.Round(((propCount.Value * 41) * count) * 0.000001, 4);
@@ -151,16 +152,35 @@ RETURN DISTINCT count(labels(n)) as count, labels(n) as label");
             return list;
 
         }
-        public bool IsServerConnected(ConnectionValueNeo4j connectionV)
+        public async Task<ResponseConnection> IsServerConnected(ConnectionValueNeo4j connectionV)
         {
+            var response = new ResponseConnection();
+            IResultCursor cursor;
+            var _driver1 = GraphDatabase.Driver(connectionV.bolt, AuthTokens.Basic(connectionV.userName, connectionV.password));
+            IAsyncSession session = _driver1.AsyncSession();
             try
             {
-                var _driver1 = GraphDatabase.Driver(connectionV.bolt, AuthTokens.Basic(connectionV.userName, connectionV.password));
-                return true;
-            }catch (Exception ex)
+                cursor = await session.RunAsync(@"SHOW DATABASES where name = $database", new { connectionV.database });
+                string type = "";
+                while (await cursor.FetchAsync())
+                {
+                    type = cursor.Current[1].As<string>("currentStatus");
+
+                }
+                response.error = false;
+                response.isConnection = type == "online" ? true : false;
+
+                return response;
+            }
+            catch (Exception ex)
             {
-                return false;
+                response.error = true;
+                response.isConnection = false;
+                response.message = ex.Message;
+                return response;
             }
         }
     }
-}
+
+ }
+    
