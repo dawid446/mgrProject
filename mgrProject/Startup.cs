@@ -40,6 +40,7 @@ namespace mgrProject
             services.AddTransient<INeo4jService, Neo4jService>();
             services.AddTransient<IMySQLService, MySQLService>();
             services.AddSingleton<INodeRelationship, NodeRelationship>();
+            services.AddTransient<IGenerationValueServices, GenerationValueServices>();
             services.Configure<MyConfiguration>(Configuration.GetSection("myConfiguration"));
             services.AddAutoMapper(typeof(Startup));
             

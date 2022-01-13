@@ -25,4 +25,24 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="IMG\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\img\1\1.PNG" />
+    <None Include="wwwroot\img\1\2.PNG" />
+    <None Include="wwwroot\img\1\3.PNG" />
+    <None Include="wwwroot\img\1\4.PNG" />
+    <None Include="wwwroot\img\1\5.PNG" />
+    <None Include="wwwroot\img\1\6.PNG" />
+    <None Include="wwwroot\img\2\1.PNG" />
+    <None Include="wwwroot\img\2\2.PNG" />
+    <None Include="wwwroot\img\2\3.PNG" />
+    <None Include="wwwroot\img\2\4.PNG" />
+    <None Include="wwwroot\img\2\5.PNG" />
+    <None Include="wwwroot\img\2\6.PNG" />
+    <None Include="wwwroot\img\podsumowanie.png" />
+  </ItemGroup>
+
 </Project>

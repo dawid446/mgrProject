@@ -15,38 +15,40 @@ namespace mgrProject.Services
     public class GenerationValueServices : IGenerationValueServices
     {
         private readonly IMapper _mapper;
+
         public GenerationValueServices(IMapper mapper)
         {
             _mapper = mapper;
         }
         public void generationMain(int count, string table)
         {
+            shopContext context = new shopContext();
             switch (table)
             {
-                case "Product" :
+                case "product" :
                     var generators = generatorCategory(count);
-                    generatorProduct(count, generators.ToList());
+                    context.Add(generatorProduct(count, generators.ToList()));
                     break;
-                case "Category" :
+                case "category" :
                     generatorCategory(count);
                     break;
-                case "User":
+                case "user":
                     generatorUser(count);
                     break;
-                case "OrderStatus":
+                case "order_status":
                     generatorOrderStatus(count);
                     break;
-                case "ShipmentAdress":
+                case "shipment_adress":
                     var user = generatorUser(count);
                     generatorShipmentAdress(count, user.ToList());
                     break;
-                case "PaymentDetail":
+                case "payment_detail":
                     generatorPaymentDetail(count);
                     break;
-                case "ShipmentDetail":
+                case "shipment_detail":
                     generatorShipmentDetail(count);
                     break;
-                case "Order":
+                case "order":
                     var orderStatus = generatorOrderStatus(count).ToList();
                     var paymentDetail = generatorPaymentDetail(count).ToList();
                     var users = generatorUser(count).ToList();
@@ -54,11 +56,11 @@ namespace mgrProject.Services
                     var shipD = generatorShipmentDetail(count).ToList();
                     generatorOrder(count,orderStatus,paymentDetail,shipA,shipD,users);
                     break;
-                case "Cart":
+                case "cart":
                     var user1 = generatorUser(count);
-                    generatorCart(count, user1.ToList());
+                    context.Add(generatorCart(count, user1.ToList()));
                     break;
-                case "OrderProduct":
+                case "order_product":
                     var orderStatus1 = generatorOrderStatus(count).ToList();
                     var paymentDetail1 = generatorPaymentDetail(count).ToList();
                     var users1 = generatorUser(count).ToList();
@@ -69,7 +71,7 @@ namespace mgrProject.Services
                     var product = generatorProduct(count, generators1).ToList();
                     generatorOrderProduct(count, order, product);
                     break;
-                case "ShoppingCart":
+                case "shopping_cart":
                     var generators2 = generatorCategory(count).ToList();
                     var product1 = generatorProduct(count, generators2).ToList();
                     var user2 = generatorUser(count).ToList();
@@ -79,6 +81,7 @@ namespace mgrProject.Services
                 default:
                     break;
             }
+            context.SaveChanges();
         }
         private IEnumerable<Product> generatorProduct(int count, List<Category> listCategory)
         {

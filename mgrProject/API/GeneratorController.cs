@@ -20,11 +20,5 @@ namespace mgrProject.API
             _generation = generation;
         }
 
-        [HttpPost("~/generation")]
-        public IActionResult GenerationValue(GenerationModel generationModel)
-        {
-            _generation.generationMain(generationModel.count, generationModel.table);
-            return Ok();
-        }
     }
 }

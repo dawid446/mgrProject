@@ -169,12 +169,7 @@
                     type: "POST",
                     dataType: "json",
                     success: function (result) {
-                        //console.log(result);
                         value = result.timeQuery;
-                        //$.each(result, function (key, item) {
-
-
-                        //});
                     },
                     error: function (errormessage) {
                         alert(errormessage.responseText);
@@ -202,6 +197,31 @@
                     }
                 });
             }
+
+            $(".add").on("click", function () {
+                var name = $(this).attr("name");
+                var count = parseInt($(`#${name}`).val());
+
+                var objects = {
+                    table: name,
+                    count: count
+                }
+
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: "https://localhost:44342/GenerationValue",
+                    data: JSON.stringify(objects),
+                    success: function (result) {
+                        if (result == true) {
+                            alert("Success ! ");
+                        } else {
+                            alert("Upss... Something goes wrong");
+                        }
+                    }
+                });
+
+            })
 
         </script>
     }

@@ -20,10 +20,12 @@ namespace mgrProject.API
     {
         private readonly INeo4jService _neo4JService;
         private readonly IMySQLService _mySQLService;
-        public V1Controller(INeo4jService neo4JService, IMySQLService mySQLService)
+        private readonly IGenerationValueServices _generation;
+        public V1Controller(INeo4jService neo4JService, IMySQLService mySQLService, IGenerationValueServices generation)
         {
             _neo4JService = neo4JService;
             _mySQLService = mySQLService;
+            _generation = generation;
         }
 
         /// <summary>
@@ -62,6 +64,20 @@ namespace mgrProject.API
         {
             var result = _neo4JService.IsServerConnected(connection);
             return Ok(result.Result);
+        }
+
+        [HttpPost("~/GenerationValue")]
+        public IActionResult GenerationValue([FromBody] GenerationModel generationModel)
+        {
+            try
+            {
+                _generation.generationMain(generationModel.count, generationModel.table);
+                return Ok(true);
+
+            }catch(Exception ex)
+            {
+                return Ok(false);
+            }
         }
 
     }

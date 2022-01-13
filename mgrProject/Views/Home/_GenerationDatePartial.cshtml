@@ -16,12 +16,19 @@
             {
                 <tr>
                     <td> <i class="fas fa-table"></i> @item.tableName </td>
-                    <td> <input type="text" id="count_@item.tableName" class="form-control" placeholder="Count"></td>
-                    <td> <input class="btn btn-primary" id="@item.tableName" type="button" value="Add"></td>
+                    <td> <input type="number" id="@item.tableName" class="form-control" placeholder="Count"></td>
+                    <td> <input class="btn btn-primary add" name="@item.tableName" type="button" value="Add"></td>
                 </tr>
             }
         </tbody>
     </table>
 
+    @section scripts
+    {
+     
 
-</div>
+      
+    }
+
+
+    </div>

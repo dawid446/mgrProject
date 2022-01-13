@@ -60,6 +60,15 @@ ORDER BY(data_length + index_length) DESC;");
             return View(result);
         }
 
+        public IActionResult Report() 
+        {
+            return View();
+        }
+
+        public IActionResult Help()
+        {
+            return View();
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
